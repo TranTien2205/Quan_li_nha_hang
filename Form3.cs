@@ -17,23 +17,14 @@ namespace Quan_li_nha_hang
           private TextBox[] tableTextBoxes;
           private TextBox[] menuTextBoxes;
 
+
           public Form3()
           {
                InitializeComponent();
                this.Load += new EventHandler(Form3_Load);
-
-               // Gán sự kiện cho các nút
-               btnDashboard.Click += (s, e) => ShowDashboard();
-               btnManageEmployees.Click += (s, e) => ShowManageEmployees();
-               btnManageCustomers.Click += (s, e) => ShowManageCustomers();
-               btnManageTables.Click += (s, e) => ShowManageTables();
-               btnManageRevenue.Click += (s, e) => ShowManageRevenue();
-               btnManageMenu.Click += (s, e) => ShowManageMenu();
-               btnLogout.Click += (s, e) => this.Close();
-
-               // Hiển thị mặc định: DASHBOARD
-               ShowDashboard();
           }
+
+     
 
           private void Form3_Load(object sender, EventArgs e)
           {
@@ -42,7 +33,7 @@ namespace Quan_li_nha_hang
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
                          conn.Open();
-                         // Kết nối thành công
+                         // Connection successful
                     }
                }
                catch (Exception ex)
@@ -54,10 +45,34 @@ namespace Quan_li_nha_hang
 
                timer = new System.Windows.Forms.Timer
                {
-                    Interval = 1000 // Cập nhật mỗi giây
+                    Interval = 1000 // Update every second
                };
                timer.Tick += (s, ev) => lblClock.Text = DateTime.Now.ToString("HH:mm:ss");
                timer.Start();
+
+               // Add mainPanel controls to the form
+               mainPanel.Controls.Add(this.dataGridView);
+               mainPanel.Controls.Add(this.chart1);
+               mainPanel.Controls.Add(this.lblRevenue);
+               mainPanel.Controls.Add(this.lblTotalRevenue);
+               mainPanel.Controls.Add(this.lblTotalCustomers);
+               mainPanel.Controls.Add(this.lblLowInventory);
+               mainPanel.Controls.Add(this.lblTableStatus);
+               mainPanel.Controls.Add(this.lblOutstandingBalance);
+               mainPanel.Controls.Add(this.lblOutstandingBalanceValue);
+               mainPanel.Controls.Add(this.lblCustomerChartTitle);
+
+               // Assign events to buttons
+               btnDashboard.Click += (s, es) => ShowDashboard();
+               btnManageEmployees.Click += (s, es) => ShowManageEmployees();
+               btnManageCustomers.Click += (s, es) => ShowManageCustomers();
+               btnManageTables.Click += (s, es) => ShowManageTables();
+               btnManageRevenue.Click += (s, es) => ShowManageRevenue();
+               btnManageMenu.Click += (s, es) => ShowManageMenu();
+               btnLogout.Click += (s, es) => this.Close();
+
+               // Default view: DASHBOARD
+               ShowDashboard();
           }
 
           private void ShowDashboard()
@@ -85,14 +100,16 @@ namespace Quan_li_nha_hang
                mainPanel.Controls.Add(lblOutstandingBalanceValue);
                mainPanel.Controls.Add(lblCustomerChartTitle);
 
-               // Cập nhật nhãn tổng doanh thu hôm nay
+               // Update today's revenue (06/06/2025)
                try
                {
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
                          conn.Open();
                          SqlCommand cmd = new SqlCommand(
-                             "SELECT SUM(tongTien) as Total FROM HoaDon WHERE CAST(ngayLapHoaDon AS DATE) = CAST(GETDATE() AS DATE)", conn);
+                             "SELECT SUM(tongTien) as Total FROM HoaDon WHERE CAST(ngayLapHoaDon AS DATE) = @date",
+                             conn);
+                         cmd.Parameters.AddWithValue("@date", new DateTime(2025, 6, 6));
                          object result = cmd.ExecuteScalar();
                          lblTotalRevenue.Text = result != DBNull.Value ? "Doanh thu hôm nay: " + Convert.ToDecimal(result).ToString("N0") + " VNĐ" : "Doanh thu hôm nay: 0 VNĐ";
                     }
@@ -102,7 +119,7 @@ namespace Quan_li_nha_hang
                     MessageBox.Show("Lỗi tải doanh thu: " + ex.Message);
                }
 
-               // Cập nhật số lượng khách hàng hôm nay
+               // Update today's customer count
                try
                {
                     using (SqlConnection conn = new SqlConnection(connectionString))
@@ -112,7 +129,9 @@ namespace Quan_li_nha_hang
                              "SELECT COUNT(DISTINCT KH.maKhachHang) as Total FROM HoaDon HD " +
                              "JOIN PhieuYeuCau P ON P.maPhieuYeuCau=HD.maPhieuYeuCau " +
                              "JOIN KhachHang KH ON KH.maKhachHang=P.maKhachHang " +
-                             "WHERE CAST(ngayLapHoaDon AS DATE) = CAST(GETDATE() AS DATE)", conn);
+                             "WHERE CAST(ngayLapHoaDon AS DATE) = @date",
+                             conn);
+                         cmd.Parameters.AddWithValue("@date", new DateTime(2025, 6, 6));
                          object result = cmd.ExecuteScalar();
                          lblTotalCustomers.Text = result != DBNull.Value ? "Khách hôm nay: " + Convert.ToInt32(result).ToString() : "Khách hôm nay: 0";
                     }
@@ -122,14 +141,15 @@ namespace Quan_li_nha_hang
                     MessageBox.Show("Lỗi tải số khách hàng: " + ex.Message);
                }
 
-               // Cập nhật số nguyên liệu tồn kho thấp
+               // Update low inventory
                try
                {
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
                          conn.Open();
                          SqlCommand cmd = new SqlCommand(
-                             "SELECT COUNT(*) as LowStock FROM chiTietPhieuNhap c JOIN nguyenLieu n ON c.maNguyenLieu = n.maNguyenLieu WHERE c.soLuong < 10", conn);
+                             "SELECT COUNT(*) as LowStock FROM chiTietPhieuNhap c JOIN nguyenLieu n ON c.maNguyenLieu = n.maNguyenLieu WHERE c.soLuong < 10",
+                             conn);
                          object result = cmd.ExecuteScalar();
                          lblLowInventory.Text = result != DBNull.Value ? "Nguyên liệu thấp: " + Convert.ToInt32(result).ToString() : "Nguyên liệu thấp: 0";
                     }
@@ -139,14 +159,15 @@ namespace Quan_li_nha_hang
                     MessageBox.Show("Lỗi tải tồn kho: " + ex.Message);
                }
 
-               // Cập nhật trạng thái bàn
+               // Update table status
                try
                {
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
                          conn.Open();
                          SqlCommand cmd = new SqlCommand(
-                             "SELECT COUNT(*) as Occupied FROM BanAn WHERE trangThai = N'Đang sử dụng'", conn);
+                             "SELECT COUNT(*) as Occupied FROM BanAn WHERE trangThai = N'Đang sử dụng'",
+                             conn);
                          object result = cmd.ExecuteScalar();
                          int occupied = result != DBNull.Value ? Convert.ToInt32(result) : 0;
 
@@ -162,7 +183,7 @@ namespace Quan_li_nha_hang
                     MessageBox.Show("Lỗi tải trạng thái bàn: " + ex.Message);
                }
 
-               // Cập nhật biểu đồ doanh thu theo ngày (7 ngày gần nhất)
+               // Update revenue chart (last 7 days including today)
                chart1.Series.Clear();
                var series = new Series("Doanh thu")
                {
@@ -177,9 +198,11 @@ namespace Quan_li_nha_hang
                          SqlCommand cmd = new SqlCommand(
                              "SELECT CAST(ngayLapHoaDon AS DATE) as Ngay, SUM(tongTien) as Total " +
                              "FROM HoaDon " +
-                             "WHERE ngayLapHoaDon >= DATEADD(day, -7, GETDATE()) " +
+                             "WHERE ngayLapHoaDon >= DATEADD(day, -7, @date) AND ngayLapHoaDon <= @date " +
                              "GROUP BY CAST(ngayLapHoaDon AS DATE) " +
-                             "ORDER BY Ngay", conn);
+                             "ORDER BY Ngay",
+                             conn);
+                         cmd.Parameters.AddWithValue("@date", new DateTime(2025, 6, 6));
                          SqlDataReader reader = cmd.ExecuteReader();
                          bool hasData = false;
                          while (reader.Read())
@@ -252,7 +275,8 @@ namespace Quan_li_nha_hang
                              "WHERE KH.maKhachHang IN (" +
                              "    SELECT DISTINCT KH2.maKhachHang FROM HoaDon HD " +
                              "    JOIN PhieuYeuCau P ON P.maPhieuYeuCau = HD.maPhieuYeuCau " +
-                             "    JOIN KhachHang KH2 ON KH2.maKhachHang = P.maKhachHang)", conn);
+                             "    JOIN KhachHang KH2 ON KH2.maKhachHang = P.maKhachHang)",
+                             conn);
 
                          DataTable dt = new DataTable();
                          adapter.Fill(dt);
@@ -265,11 +289,9 @@ namespace Quan_li_nha_hang
                }
           }
 
-
           private void ShowManageEmployees()
           {
                mainPanel.Controls.Clear();
-               dataGridView.Visible = true;
                chart1.Visible = false;
                lblRevenue.Visible = false;
                lblTotalRevenue.Visible = false;
@@ -279,39 +301,84 @@ namespace Quan_li_nha_hang
                lblOutstandingBalance.Visible = false;
                lblOutstandingBalanceValue.Visible = false;
                lblCustomerChartTitle.Visible = false;
+               dataGridView.Visible = true;
 
                mainPanel.Controls.Add(dataGridView);
 
+               // Title
                Label lblTitle = new Label
                {
                     Text = "QUẢN LÝ NHÂN VIÊN",
-                    Location = new Point(10, 10),
+                    Location = new Point((mainPanel.Width - 200) / 2, 10), // Center the title
                     Size = new Size(200, 30),
-                    Font = new Font("Segoe UI", 12F, FontStyle.Bold)
+                    Font = new Font("Segoe UI", 12F, FontStyle.Bold),
+                    TextAlign = ContentAlignment.MiddleCenter
                };
                mainPanel.Controls.Add(lblTitle);
 
+               // Input fields in two columns
                int y = 50;
                string[] labels = { "Mã NV", "Họ tên", "Giới tính", "Ngày sinh", "Địa chỉ", "SĐT", "Chức vụ", "Lương" };
                employeeTextBoxes = new TextBox[labels.Length];
-               for (int i = 0; i < labels.Length; i++)
+
+               // First column (Mã NV, Họ tên, Giới tính, Ngày sinh)
+               int xLeft = 20;
+               for (int i = 0; i < labels.Length / 2; i++)
                {
-                    Label lbl = new Label { Text = labels[i], Location = new Point(10, y), Size = new Size(100, 20) };
-                    employeeTextBoxes[i] = new TextBox { Location = new Point(120, y), Size = new Size(200, 20) };
-                    //if (i == 2) employeeTextBoxes[i].Text = "Nam";
-                    //if (i == 3) employeeTextBoxes[i].Text = "2000-01-01";
+                    Label lbl = new Label
+                    {
+                         Text = labels[i],
+                         Location = new Point(xLeft, y),
+                         Size = new Size(100, 25),
+                         Font = new Font("Segoe UI", 9F)
+                    };
+                    employeeTextBoxes[i] = new TextBox
+                    {
+                         Location = new Point(xLeft + 110, y),
+                         Size = new Size(180, 25),
+                         Font = new Font("Segoe UI", 9F)
+                    };
                     mainPanel.Controls.Add(lbl);
                     mainPanel.Controls.Add(employeeTextBoxes[i]);
-                    y += 30;
+                    y += 40;
                }
+
+               // Second column (Địa chỉ, SĐT, Chức vụ, Lương)
+               y = 50;
+               int xRight = mainPanel.Width / 2 + 20;
+               for (int i = labels.Length / 2; i < labels.Length; i++)
+               {
+                    Label lbl = new Label
+                    {
+                         Text = labels[i],
+                         Location = new Point(xRight, y),
+                         Size = new Size(100, 25),
+                         Font = new Font("Segoe UI", 9F)
+                    };
+                    employeeTextBoxes[i] = new TextBox
+                    {
+                         Location = new Point(xRight + 110, y),
+                         Size = new Size(180, 25),
+                         Font = new Font("Segoe UI", 9F)
+                    };
+                    mainPanel.Controls.Add(lbl);
+                    mainPanel.Controls.Add(employeeTextBoxes[i]);
+                    y += 40;
+               }
+
+               // Buttons (Add, Update, Delete) centered below the input fields
+               int buttonY = 230; // Adjusted Y position after the input fields
+               int totalButtonWidth = 80 * 3 + 20 * 2; // 3 buttons, 80 width each, 20px spacing between them
+               int buttonXStart = (mainPanel.Width - totalButtonWidth) / 2; // Center the buttons
 
                Button btnAdd = new Button
                {
                     Text = "Thêm",
-                    Location = new Point(120, y),
+                    Location = new Point(buttonXStart, buttonY),
                     Size = new Size(80, 30),
                     BackColor = Color.FromArgb(0, 71, 160),
-                    ForeColor = Color.White
+                    ForeColor = Color.White,
+                    Font = new Font("Segoe UI", 9F, FontStyle.Bold)
                };
                btnAdd.Click += (s, e) =>
                {
@@ -376,10 +443,11 @@ namespace Quan_li_nha_hang
                Button btnUpdate = new Button
                {
                     Text = "Cập nhật",
-                    Location = new Point(210, y),
+                    Location = new Point(buttonXStart + 100, buttonY),
                     Size = new Size(80, 30),
                     BackColor = Color.FromArgb(0, 71, 160),
-                    ForeColor = Color.White
+                    ForeColor = Color.White,
+                    Font = new Font("Segoe UI", 9F, FontStyle.Bold)
                };
                btnUpdate.Click += (s, e) =>
                {
@@ -432,10 +500,11 @@ namespace Quan_li_nha_hang
                Button btnDelete = new Button
                {
                     Text = "Xóa",
-                    Location = new Point(300, y),
+                    Location = new Point(buttonXStart + 200, buttonY),
                     Size = new Size(80, 30),
                     BackColor = Color.FromArgb(0, 71, 160),
-                    ForeColor = Color.White
+                    ForeColor = Color.White,
+                    Font = new Font("Segoe UI", 9F, FontStyle.Bold)
                };
                btnDelete.Click += (s, e) =>
                {
@@ -466,6 +535,13 @@ namespace Quan_li_nha_hang
                };
                mainPanel.Controls.Add(btnDelete);
 
+               // Adjust DataGridView position and size
+               dataGridView.Visible = true;
+               dataGridView.Location = new Point(20, buttonY + 50);
+               dataGridView.Size = new Size(mainPanel.Width - 40, mainPanel.Height - (buttonY + 90));
+               dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+               mainPanel.Controls.Add(dataGridView);
+
                dataGridView.SelectionChanged -= DataGridView_SelectionChanged_Employees;
                dataGridView.SelectionChanged += DataGridView_SelectionChanged_Employees;
 
@@ -476,11 +552,9 @@ namespace Quan_li_nha_hang
           {
                try
                {
-                    // Clear existing columns
                     dataGridView.Columns.Clear();
-                    dataGridView.AutoGenerateColumns = false; // Prevent auto-generated columns
+                    dataGridView.AutoGenerateColumns = false;
 
-                    // Define columns with formatting
                     dataGridView.Columns.Add(new DataGridViewTextBoxColumn
                     {
                          Name = "maNhanVien",
@@ -508,7 +582,7 @@ namespace Quan_li_nha_hang
                          HeaderText = "Ngày sinh",
                          DataPropertyName = "ngaySinh",
                          Width = 100,
-                         DefaultCellStyle = new DataGridViewCellStyle { Format = "dd/MM/yyyy" } // Format date
+                         DefaultCellStyle = new DataGridViewCellStyle { Format = "dd/MM/yyyy" }
                     });
                     dataGridView.Columns.Add(new DataGridViewTextBoxColumn
                     {
@@ -537,10 +611,9 @@ namespace Quan_li_nha_hang
                          HeaderText = "Lương",
                          DataPropertyName = "luong",
                          Width = 100,
-                         DefaultCellStyle = new DataGridViewCellStyle { Format = "N0" } // Format as number (no decimals)
+                         DefaultCellStyle = new DataGridViewCellStyle { Format = "N0" }
                     });
 
-                    // Load data from database
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
                          conn.Open();
@@ -758,7 +831,7 @@ namespace Quan_li_nha_hang
                     DataGridViewRow row = dataGridView.SelectedRows[0];
                     customerTextBoxes[0].Text = row.Cells["ID"].Value?.ToString() ?? "";
                     customerTextBoxes[1].Text = row.Cells["Tên khách hàng"].Value?.ToString() ?? "";
-                    customerTextBoxes[2].Text = row.Cells["Giới tính"].Value?.ToString() ?? "Nam"; // Cần thêm cột GioiTinh vào SQL nếu cần
+                    customerTextBoxes[2].Text = row.Cells["Giới tính"].Value?.ToString() ?? "Nam"; // Note: Adjust if 'Giới tính' is not in the query
                     customerTextBoxes[3].Text = row.Cells["SĐT"].Value?.ToString() ?? "";
                     customerTextBoxes[4].Text = row.Cells["Địa chỉ"].Value?.ToString() ?? "";
                }
@@ -849,11 +922,9 @@ namespace Quan_li_nha_hang
           {
                try
                {
-                    // Clear existing columns and disable auto-generated columns
                     dataGridView.Columns.Clear();
                     dataGridView.AutoGenerateColumns = false;
 
-                    // Define columns
                     dataGridView.Columns.Add(new DataGridViewTextBoxColumn
                     {
                          Name = "maBanAn",
@@ -871,7 +942,6 @@ namespace Quan_li_nha_hang
                          ReadOnly = true
                     });
 
-                    // Load data from database
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
                          conn.Open();
@@ -880,7 +950,6 @@ namespace Quan_li_nha_hang
                               DataTable dt = new DataTable();
                               adapter.Fill(dt);
 
-                              // Transform status values for display
                               foreach (DataRow row in dt.Rows)
                               {
                                    if (row["trangThai"] != DBNull.Value)
@@ -889,9 +958,7 @@ namespace Quan_li_nha_hang
                                         if (status == "0")
                                              row["trangThai"] = "Trống";
                                         else if (status == "1")
-                                             row["trangThai"] = "Đã đặt";
-                                        else
-                                             row["trangThai"] = status; // Fallback for unexpected values
+                                             row["trangThai"] = "Đang sử dụng";
                                    }
                                    else
                                    {
@@ -903,7 +970,6 @@ namespace Quan_li_nha_hang
                          }
                     }
 
-                    // Enhance DataGridView appearance
                     dataGridView.AllowUserToOrderColumns = true;
                     dataGridView.AlternatingRowsDefaultCellStyle.BackColor = Color.LightGray;
                }
@@ -924,7 +990,6 @@ namespace Quan_li_nha_hang
 
                try
                {
-                    // Temporarily unsubscribe to prevent recursive updates
                     dataGridView.SelectionChanged -= DataGridView_SelectionChanged_Tables;
 
                     DataGridViewRow row = dataGridView.SelectedRows[0];
@@ -937,7 +1002,6 @@ namespace Quan_li_nha_hang
                }
                finally
                {
-                    // Re-subscribe to the event
                     dataGridView.SelectionChanged += DataGridView_SelectionChanged_Tables;
                }
           }
@@ -974,11 +1038,9 @@ namespace Quan_li_nha_hang
           {
                try
                {
-                    // Clear existing columns and disable auto-generated columns
                     dataGridView.Columns.Clear();
                     dataGridView.AutoGenerateColumns = false;
 
-                    // Define columns with formatting
                     dataGridView.Columns.Add(new DataGridViewTextBoxColumn
                     {
                          Name = "maHoaDon",
@@ -993,7 +1055,7 @@ namespace Quan_li_nha_hang
                          HeaderText = "Ngày lập",
                          DataPropertyName = "ngayLapHoaDon",
                          Width = 120,
-                         DefaultCellStyle = new DataGridViewCellStyle { Format = "dd/MM/yyyy" } // Format date
+                         DefaultCellStyle = new DataGridViewCellStyle { Format = "dd/MM/yyyy" }
                     });
                     dataGridView.Columns.Add(new DataGridViewTextBoxColumn
                     {
@@ -1001,7 +1063,7 @@ namespace Quan_li_nha_hang
                          HeaderText = "Tổng tiền",
                          DataPropertyName = "tongTien",
                          Width = 120,
-                         DefaultCellStyle = new DataGridViewCellStyle { Format = "N0", Alignment = DataGridViewContentAlignment.MiddleRight } // Format as number
+                         DefaultCellStyle = new DataGridViewCellStyle { Format = "N0", Alignment = DataGridViewContentAlignment.MiddleRight }
                     });
                     dataGridView.Columns.Add(new DataGridViewTextBoxColumn
                     {
@@ -1012,7 +1074,6 @@ namespace Quan_li_nha_hang
                          ReadOnly = true
                     });
 
-                    // Load data from database
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
                          conn.Open();
@@ -1029,7 +1090,6 @@ namespace Quan_li_nha_hang
                          }
                     }
 
-                    // Enhance DataGridView appearance
                     dataGridView.AllowUserToOrderColumns = true;
                     dataGridView.AlternatingRowsDefaultCellStyle.BackColor = Color.LightGray;
                }
@@ -1227,11 +1287,9 @@ namespace Quan_li_nha_hang
           {
                try
                {
-                    // Clear existing columns and disable auto-generated columns
                     dataGridView.Columns.Clear();
                     dataGridView.AutoGenerateColumns = false;
 
-                    // Define columns with formatting
                     dataGridView.Columns.Add(new DataGridViewTextBoxColumn
                     {
                          Name = "maMonAn",
@@ -1262,10 +1320,9 @@ namespace Quan_li_nha_hang
                          HeaderText = "Giá tiền",
                          DataPropertyName = "giaTien",
                          Width = 120,
-                         DefaultCellStyle = new DataGridViewCellStyle { Format = "N0", Alignment = DataGridViewContentAlignment.MiddleRight } // Format as number
+                         DefaultCellStyle = new DataGridViewCellStyle { Format = "N0", Alignment = DataGridViewContentAlignment.MiddleRight }
                     });
 
-                    // Load data from database
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
                          conn.Open();
@@ -1275,7 +1332,6 @@ namespace Quan_li_nha_hang
                               DataTable dt = new DataTable();
                               adapter.Fill(dt);
 
-                              // Handle null values in DataTable
                               foreach (DataRow row in dt.Rows)
                               {
                                    if (row["donViTinh"] == DBNull.Value)
@@ -1288,7 +1344,6 @@ namespace Quan_li_nha_hang
                          }
                     }
 
-                    // Enhance DataGridView appearance
                     dataGridView.AllowUserToOrderColumns = true;
                     dataGridView.AlternatingRowsDefaultCellStyle.BackColor = Color.LightGray;
                }
@@ -1309,7 +1364,6 @@ namespace Quan_li_nha_hang
 
                try
                {
-                    // Temporarily unsubscribe to prevent recursive updates
                     dataGridView.SelectionChanged -= DataGridView_SelectionChanged_Menu;
 
                     DataGridViewRow row = dataGridView.SelectedRows[0];
@@ -1324,9 +1378,18 @@ namespace Quan_li_nha_hang
                }
                finally
                {
-                    // Re-subscribe to the event
                     dataGridView.SelectionChanged += DataGridView_SelectionChanged_Menu;
                }
+          }
+
+          private void btnManageEmployees_Click(object sender, EventArgs e)
+          {
+               panel4.Visible = false;
+               panel5.Visible = false;
+               panel6.Visible = false;
+               panel7.Visible = false;
+               panel8.Visible = false;
+               ShowManageEmployees();
           }
      }
 }

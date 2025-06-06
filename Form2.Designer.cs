@@ -2,7 +2,7 @@
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
-namespace Quan_li_nha_hang     
+namespace Quan_li_nha_hang
 {
      partial class Form2
      {

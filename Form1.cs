@@ -10,7 +10,6 @@ namespace Quan_li_nha_hang
           public Form1()
           {
                InitializeComponent();
-
           }
 
           private void label1_Click(object sender, EventArgs e)
@@ -22,8 +21,6 @@ namespace Quan_li_nha_hang
           {
 
           }
-
-
 
           private void button1_Click(object sender, EventArgs e)
           {
@@ -57,7 +54,7 @@ namespace Quan_li_nha_hang
                               }
                               else if (role == "user")
                               {
-                                   Form2 f2 = new Form2(this);
+                                   Form2 f2 = new Form2(this, username); // Truyền username làm tham số user
                                    this.Hide();
                                    f2.Show();
                               }
@@ -69,9 +66,6 @@ namespace Quan_li_nha_hang
                     }
                }
           }
-
-
-
 
           private void textBox1_Click(object sender, EventArgs e)
           {
@@ -91,6 +85,7 @@ namespace Quan_li_nha_hang
                     e.SuppressKeyPress = true;
                }
           }
+
           private void textBox2_KeyDown(object sender, KeyEventArgs e)
           {
                if (e.KeyCode == Keys.Enter)

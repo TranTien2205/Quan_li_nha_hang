@@ -8,27 +8,40 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace QL_nha_hang
+namespace Quan_li_nha_hang
 {
-    public partial class QRcode : Form
-    {
-        public QRcode(Bitmap qrImage, string sotien)
-        {
-            InitializeComponent();
-            QRBox.Image = qrImage;
-            QRBox.SizeMode = PictureBoxSizeMode.Zoom;
-            QRBox.Dock = DockStyle.Top;
-            QRBox.Height = 300;
+     public partial class QRcode : Form
+     {
+          private Bitmap qrImage;
+          private string soTien;
 
-            SotienLabel1.Text = sotien + " VND";
+          /// <summary>
+          /// Constructor nhận hình ảnh QR và số tiền để hiển thị
+          /// </summary>
+          public QRcode(Bitmap qrImage, string soTien)
+          {
+               InitializeComponent();
+               this.qrImage = qrImage;
+               this.soTien = soTien;
+               InitializeForm();
+          }
 
+          /// <summary>
+          /// Khởi tạo form với hình ảnh QR và thông tin số tiền
+          /// </summary>
+          private void InitializeForm()
+          {
+               QRBox.Image = qrImage; // Gán hình ảnh QR
+               SotienLabel1.Text = $"Số tiền: {soTien} VNĐ"; // Hiển thị số tiền
+          }
 
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("Cảm ơn bạn đã chuyển khoản!", "Xác nhận", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            this.Close(); // đóng FormQR → quay lại Form1
-        }
-    }
+          /// <summary>
+          /// Xử lý khi nhấn nút "Đã chuyển khoản"
+          /// </summary>
+          private void button1_Click(object sender, EventArgs e)
+          {
+               MessageBox.Show("Thanh toán thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+               this.Close(); // Đóng form sau khi xác nhận
+          }
+     }
 }

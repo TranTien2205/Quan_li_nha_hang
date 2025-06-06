@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -49,7 +49,6 @@ namespace Quan_li_nha_hang
                }
                base.Dispose(disposing);
           }
-
           private void InitializeComponent()
           {
                System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();

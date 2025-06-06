@@ -18,7 +18,7 @@ namespace Quan_li_nha_hang
           private Button btnDashboard;
           private Button btnLogout;
           private Label lblClock;
-          private Panel mainPanel; // Renamed from panel3
+          private Panel mainPanel; 
           private Panel panel4;
           private Label lblTitle;
           private Panel panel5;
@@ -31,15 +31,15 @@ namespace Quan_li_nha_hang
           private Chart chartMenuRevenue;
           private Panel panel8;
           private Chart chartMonthlySales;
-          private DataGridView dataGridView; // Added
-          private Chart chart1; // Added
-          private Label lblTotalRevenue; // Added
-          private Label lblTotalCustomers; // Added
-          private Label lblLowInventory; // Added
-          private Label lblTableStatus; // Added
-          private Label lblOutstandingBalance; // Added
-          private Label lblOutstandingBalanceValue; // Added
-          private Label lblCustomerChartTitle; // Added
+          private DataGridView dataGridView; 
+          private Chart chart1; 
+          private Label lblTotalRevenue; 
+          private Label lblTotalCustomers; 
+          private Label lblLowInventory; 
+          private Label lblTableStatus; 
+          private Label lblOutstandingBalance; 
+          private Label lblOutstandingBalanceValue; 
+          private Label lblCustomerChartTitle; 
 
           protected override void Dispose(bool disposing)
           {
@@ -536,6 +536,8 @@ namespace Quan_li_nha_hang
                this.chartMonthlySales.Size = new System.Drawing.Size(330, 230);
                this.chartMonthlySales.TabIndex = 2;
                this.chartMonthlySales.Text = "Biểu đồ theo tháng";
+
+               
                // 
                // Form3
                // 
@@ -568,6 +570,12 @@ namespace Quan_li_nha_hang
                this.panel8.ResumeLayout(false);
                ((System.ComponentModel.ISupportInitialize)(this.chartMonthlySales)).EndInit();
                this.ResumeLayout(false);
+
+
+               ////////////////////////////////////////////////////////////////////////////////////
+               
+
+               ///////////////////////////////////////////////////////////////////////////////////
 
           }
      }

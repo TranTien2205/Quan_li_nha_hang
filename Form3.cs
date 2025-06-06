@@ -1390,6 +1390,7 @@ namespace Quan_li_nha_hang
                panel7.Visible = false;
                panel8.Visible = false;
                ShowManageEmployees();
+
           }
      }
 }

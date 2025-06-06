@@ -74,6 +74,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+
     <Compile Include="QRcode.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -86,6 +87,7 @@
     <Compile Include="TienMat.Designer.cs">
       <DependentUpon>TienMat.cs</DependentUpon>
     </Compile>
+
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -145,6 +147,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Ikon_Pencarian__Cari_Clipart__Kaca_Pembesar__Cari_PNG_Transparan_Clipart_dan_File_PSD_untuk_Unduh_Gratis-removebg-preview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Nhahang.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\th.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\th %281%29.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

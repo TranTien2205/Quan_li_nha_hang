@@ -11,7 +11,6 @@ using System.Drawing.Drawing2D;
 using Quan_li_nha_hang;
 using System.Reflection.Emit;
 using QRCoder;
-
 using QL_nha_hang;
 
 namespace Quan_li_nha_hang
@@ -28,7 +27,6 @@ namespace Quan_li_nha_hang
           private void Form2_Load(object sender, EventArgs e)
           {
                timer1.Start();
-            
           }
           private void Form_FormClosed(object sender, FormClosedEventArgs e)
           {
@@ -40,7 +38,7 @@ namespace Quan_li_nha_hang
 
           }
 
-         
+
 
 
           private void textBox1_TextChanged(object sender, EventArgs e)
@@ -67,22 +65,11 @@ namespace Quan_li_nha_hang
 
           }
 
-         
 
-         
           private void btnBan_Click(object sender, EventArgs e)
           {
                Button btn = sender as Button;
-               //int trangThai = Convert.ToInt32(btn.Tag);
-
-               //if (trangThai == 0)
-               //{
-               //   MessageBox.Show($"{btn.Text} đang trống.");
-               // }
-               //else
-               //{
-               //    MessageBox.Show($"{btn.Text} đang có khách.");
-               //}
+           
                label3.Text = btn.Text;
           }
 
@@ -152,4 +139,5 @@ namespace Quan_li_nha_hang
 
       
     }
+
 }

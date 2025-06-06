@@ -134,5 +134,38 @@ namespace Quan_li_nha_hang.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+<<<<<<< HEAD
+=======
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Nhahang {
+            get {
+                object obj = ResourceManager.GetObject("Nhahang", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap th {
+            get {
+                object obj = ResourceManager.GetObject("th", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap th__1_ {
+            get {
+                object obj = ResourceManager.GetObject("th__1_", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+>>>>>>> e5e19104cdb1d89226a617bffd10d33250c3212f
     }
 }

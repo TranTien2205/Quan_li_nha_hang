@@ -30,16 +30,20 @@ namespace Quan_li_nha_hang
                string username = textBox1.Text.Trim();
                string password = textBox2.Text.Trim();
 
+
                string connectionString = "Server=LAPTOP-TINNGUYE\\MSSQLSERVER01;Database=QuanLyNhaHang5;User Id=user_tin;Password=123456789@@@;Encrypt=False;";
+
 
                using (SqlConnection conn = new SqlConnection(connectionString))
                {
                     conn.Open();
                     string query = "SELECT VaiTro,TenDangNhap FROM TaiKhoan WHERE TenDangNhap = @user AND MatKhau = @pass";
+
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                          cmd.Parameters.AddWithValue("@user", username);
                          cmd.Parameters.AddWithValue("@pass", password);
+
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -67,6 +71,7 @@ namespace Quan_li_nha_hang
                         }
                     }
                 }
+
                }
           }
 
@@ -103,8 +108,7 @@ namespace Quan_li_nha_hang
           private void checkBox1_CheckedChanged(object sender, EventArgs e)
           {
                textBox2.UseSystemPasswordChar = false;
-          }
-
-        
+          }    
     }
+
 }

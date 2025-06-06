@@ -49,6 +49,7 @@ namespace Quan_li_nha_hang
                }
                base.Dispose(disposing);
           }
+
           private void InitializeComponent()
           {
                System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
@@ -535,7 +536,7 @@ namespace Quan_li_nha_hang
                this.chartMonthlySales.Size = new System.Drawing.Size(330, 230);
                this.chartMonthlySales.TabIndex = 2;
                this.chartMonthlySales.Text = "Biểu đồ theo tháng";
-
+              
                
                // 
                // Form3
@@ -570,12 +571,8 @@ namespace Quan_li_nha_hang
                ((System.ComponentModel.ISupportInitialize)(this.chartMonthlySales)).EndInit();
                this.ResumeLayout(false);
 
-
-               ////////////////////////////////////////////////////////////////////////////////////
+               ///////////////////////////////////////////////////////////
                
-
-               ///////////////////////////////////////////////////////////////////////////////////
-
           }
      }
 }
